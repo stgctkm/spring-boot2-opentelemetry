@@ -1,0 +1,5 @@
+rootProject.name = 'SpringOpentelemetry'
+
+rootProject.name = 'spring-opentelemetry'
+include 'infrastructure:opentelemetry'
+include 'app:downstream', 'app:upstream'

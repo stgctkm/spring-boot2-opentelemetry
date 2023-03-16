@@ -1,0 +1,67 @@
+buildscript {
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.2.RELEASE"
+    }
+}
+
+plugins {
+    id 'java'
+//    id 'org.springframework.boot' version '3.0.3'
+    id 'org.springframework.boot' version '2.7.9'
+    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+apply plugin: "io.spring.dependency-management"
+
+
+group = 'open.telemetry'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://repo.spring.io/snapshot"
+    }
+    maven {
+        url "https://repo.spring.io/milestone"
+    }
+    maven {
+        url "https://repo.spring.io/release"
+    }
+}
+
+apply plugin: "io.spring.dependency-management"
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2021.0.5'
+        mavenBom 'org.springframework.cloud:spring-cloud-sleuth-otel-dependencies:1.1.2'
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-sleuth
+    implementation ('org.springframework.cloud:spring-cloud-starter-sleuth:3.1.7') {
+        exclude group: 'org.springframework.cloud', module: 'spring-cloud-sleuth-brave'
+    }
+
+    implementation platform('io.micrometer:micrometer-tracing-bom:latest.release')
+    implementation 'io.micrometer:micrometer-tracing'
+
+
+    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-sleuth-otel-autoconfigure
+    implementation 'org.springframework.cloud:spring-cloud-sleuth-otel-autoconfigure:1.1.2'
+
+    // https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-exporter-otlp
+    implementation 'io.opentelemetry:opentelemetry-exporter-otlp:1.23.1'
+
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

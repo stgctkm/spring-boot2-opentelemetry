@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  product-service:
+    image: upstream:0.0.1-SNAPSHOT
+    ports:
+      - "8080:8080"
+
+  price-service:
+    image: downstream:0.0.1-SNAPSHOT
+    ports:
+      - "8081"
+
+  jaeger-service:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+      - "14250"
+
+  collector:
+    image: otel/opentelemetry-collector:0.72.0
+    command: [ "--config=/etc/otel-collector-config.yml" ]
+    volumes:
+      - ./otel-config.yml:/etc/otel-collector-config.yml
+    ports:
+      - "4317:4317"
+    depends_on:
+      - jaeger-service
